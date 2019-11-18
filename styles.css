@@ -1,0 +1,122 @@
+body, html {
+  height: 100vh;
+  margin: 0;
+  background-color: darkslategrey;
+  font-size: 7vh
+}
+
+.container {
+  height: 100%;
+  display: grid;
+  grid-template: 1fr 1fr 1fr 1fr 1fr 1fr / 1fr 1fr 1fr 1fr;
+  grid-template-areas: "screen screen screen screen"
+                       "clear clear delete divide"
+                       "seven eight nine multiply"
+                       "four five six minus"
+                       "one two three plus"
+                       "decimal zero equal equal";
+}
+
+p {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: right;
+  font-size: 7vh;
+}
+
+.screen {
+  grid-area: screen;
+  display: table;
+  height: 100%;
+  background-color: green;
+  border: thick solid black;
+  font-family: 'VT323', monospace;
+}
+
+.button {
+  display: table;
+  height: 100%;
+  background-color: darkgrey;
+  border: thick solid black;
+  border-radius: 10px;
+}
+
+.button p {
+  text-align: center;
+}
+
+.number {
+  background-color: lightgrey;
+}
+
+#zero {
+  grid-area: zero;
+}
+
+#one {
+  grid-area: one;
+}
+
+#two {
+  grid-area: two;
+}
+
+#three {
+  grid-area: three;
+}
+
+#four {
+  grid-area: four;
+}
+
+#five {
+  grid-area: five;
+}
+
+#six {
+  grid-area: six;
+}
+
+#seven {
+  grid-area: seven;
+}
+
+#eight {
+  grid-area: eight;
+}
+
+#nine {
+  grid-area: nine;
+}
+
+#divide {
+  grid-area: divide;
+}
+
+#multiply {
+  grid-area: multiply;
+}
+
+#clear {
+  grid-area: clear;
+}
+
+#minus {
+  grid-area: minus;
+}
+
+#plus {
+  grid-area: plus;
+}
+
+#equal {
+  grid-area: equal;
+}
+
+#decimal {
+  grid-area: decimal;
+}
+
+#delete {
+  grid-area: delete;
+}
