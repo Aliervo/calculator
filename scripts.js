@@ -110,10 +110,11 @@ function keybindings(e) {
   updateScreen();
 };
 
-function evaluate (string) { //evaluate an input string in reverse polish notation
+const operators = ['+','-','*','/','=']
+
+function evaluate(string) { //evaluate an input string in reverse polish notation
   const inputArray = string.split(' ');
   const stack = [];
-  const operators = ['+','-','*','/','=']
 
   inputArray.forEach(token => {
     if (operators.indexOf(token) !== -1) {
@@ -124,7 +125,25 @@ function evaluate (string) { //evaluate an input string in reverse polish notati
     } else {
         stack.push(token);
     };
-    console.log(stack);
   });
   return stack.pop();
+};
+
+function shuntingYard(string) { //takes input in algebraic notation and returns
+  const outputQueue = [];        // a string in reverse polish notation
+  const operatorStack = [];
+  const inputArray = string.split('');
+
+  inputArray.forEach(token => {
+    if (operators.indexOf(token) !== -1) {
+      operatorStack.push(token);
+    } else {
+      outputQueue.push(token);
+    };
+  });
+
+  operatorStack.forEach(token => {
+    outputQueue.push(token);
+  });
+  return outputQueue.join(' ');
 };
