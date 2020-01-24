@@ -1,27 +1,14 @@
 let display = '';
 
+const operators = ['+','-','*','/','=']
 const screen = document.querySelector('.screen p');
-screen.textContent = 'Hello, Calculator!';
-
-function updateScreen() {
-  (display.indexOf('CLEAR') !== -1) ? //enable clear and delete
-  display = '' :
-  (display.indexOf('DELETE') !== -1)?
-  display = display.slice (0, display.length - 7) :
-  (display.indexOf('=') !== -1)? //keep equal sign from showing
-  display = display.slice (0, display.indexOf('=')) :
-    display = display;
-
-  screen.textContent = `${display}`;
-};
-
 const buttons = document.querySelectorAll('.button');
-buttons.forEach((button) => button.addEventListener('click', (e) => {
-  (e.target.textContent !== 'DELETE') ?
-  parse(display, e.target.textContent) :
-  display += e.target.textContent;
-  updateScreen();
-}));
+
+updateScreen('Hello, Calculator!');
+
+function updateScreen(string) {
+  screen.textContent = string
+};
 
 function add() {
   return arguments[0] + arguments[1];
@@ -36,45 +23,50 @@ function multiply() {
 };
 
 function divide() {
-  if (arguments[1] === 0) return 'Are you trying to break things?';
-  return arguments[0] / arguments[1];
+  return (arguments[1] === 0)       ?
+  'Are you trying to break things?' :
+  arguments[0] / arguments[1]       ;
 };
 
 function operate(x, y, operator) {
-  return (operator === '+') ? add(+x, +y) :
+  return (operator === '+') ? add(+x, +y)      :
          (operator === '-') ? subtract(+x, +y) :
          (operator === '*') ? multiply(+x, +y) :
-            divide(+x, +y);
+            divide(+x, +y)  ;
 };
 
 function parse(string, input) {
-  const operations = ['/', '*', '-', '+'];
-
   //keep decimals to one per number
-  if (input === '.' && display.lastIndexOf('.') > display.indexOf('/') && display.lastIndexOf('.') > display.indexOf('*') && display.lastIndexOf('.') > display.indexOf('-') && display.lastIndexOf('.') > display.indexOf('+')) return;
+  if (input === '.' &&
+      display.lastIndexOf('.') > display.indexOf('/') &&
+      display.lastIndexOf('.') > display.indexOf('*') &&
+      display.lastIndexOf('.') > display.indexOf('-') &&
+      display.lastIndexOf('.') > display.indexOf('+')) return;
 
   display = string.split(' ').join('')
-  if (input !== '.') {
-    operations.forEach(operator => {
-      if (display.indexOf(operator, 1) !== -1) display =`${operate(string.split(operator)[0], string.split(operator)[1], operator)}`;
-    });
-  };
-
-  if (input === '=') {
-    if (operations.indexOf(string.split('').pop()) !== -1) {
-      display = display.slice(0, display.length);
-    };
-  };
+  if (input !== '.') display = evaluate(shuntingYard(display));
 
   display += input;
-  updateScreen();
+
+  (display.indexOf('=') !== -1)? //keep equal sign from showing
+  display = display.slice (0, display.indexOf('=')) :
+    display = display;
+
+  updateScreen(display);
 };
+
+buttons.forEach((button) => {
+  button.addEventListener('click', (e) => keybindings(e));
+});
 
 window.addEventListener('keydown', (e) => keybindings(e));
 
 function keybindings(e) {
-  keyPressed = e.key;
-  switch (keyPressed) {
+  const keyPressed = e.key;
+  const clicked = e.target.textContent;
+  const input = (keyPressed != undefined) ? keyPressed: clicked;
+
+  switch (input) {
     case ('0'):
     case ('1'):
     case ('2'):
@@ -85,7 +77,7 @@ function keybindings(e) {
     case ('7'):
     case ('8'):
     case ('9'):
-      display += keyPressed;
+      display += input;
       break;
     case ('.'):
     case ('+'):
@@ -93,24 +85,24 @@ function keybindings(e) {
     case ('*'):
     case ('/'):
     case ('='):
-      parse(display, keyPressed);
+      parse(display, input);
       break;
     case ('Enter'):
       parse(display, '=');
       break;
     case ('Backspace'):
-      display += 'DELETE';
+    case ('DELETE'):
+      display = display.slice(0, display.length - 1);
       break;
     case ('Escape'):
-      parse(display, 'CLEAR');
+    case ('CLEAR'):
+      display = '';
       break;
     default:
       return;
   };
-  updateScreen();
+  updateScreen(display);
 };
-
-const operators = ['+','-','*','/','=']
 
 function evaluate(string) { //evaluate an input string in reverse polish notation
   const inputArray = string.split(' ');
