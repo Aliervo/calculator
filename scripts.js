@@ -7,7 +7,7 @@ const buttons = document.querySelectorAll('.button');
 updateScreen('Hello, Calculator!');
 
 function updateScreen(string) {
-  screen.textContent = string
+  screen.textContent = string;
 };
 
 function add() {
@@ -47,16 +47,16 @@ function parse(string, input) {
       display.lastIndexOf('.') > display.indexOf('-') &&
       display.lastIndexOf('.') > display.indexOf('+')) return;
 
-  //display = string.split(' ').join('')
   if (input !== '.') display = evaluate(shuntingYard(display));
 
   display += input;
 
-  (display.indexOf('=') !== -1)? //keep equal sign from showing
-  display = display.slice (0, display.indexOf('=')) :
-    display = display;
+  //prevent equal sign from showing
+  (display.indexOf('=') !== -1)                     ?
+   display = display.slice(0, display.indexOf('=')) :
+   display = display                                ;
 
-  updateScreen(display);
+  updateScreen(string);
 };
 
 buttons.forEach((button) => {
@@ -125,18 +125,22 @@ function evaluate(string) { //evaluate an input string in reverse polish notatio
   return stack.pop();
 };
 
-function shuntingYard(string) { //takes input in algebraic notation and returns
+function shuntingYard(string) { //take input in algebraic notation and return
   const outputQueue = [];        // a string in reverse polish notation
   const operatorStack = [];
   const inputArray = string.split('');
+  let numberArray = [];
 
   inputArray.forEach(token => {
-    if (operators.indexOf(token) !== -1 && outputQueue.length > 0) {
+    if (operators.indexOf(token) !== -1 && numberArray.length > 0) {
+      numberArray = numberArray.join('').split();
+      outputQueue.push(numberArray.pop());
       operatorStack.push(token);
     } else {
-      outputQueue.push(token);
+      numberArray.push(token);
     };
   });
+  outputQueue.push(numberArray.join('').split().pop());
 
   operatorStack.forEach(token => {
     outputQueue.push(token);
