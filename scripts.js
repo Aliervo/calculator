@@ -36,6 +36,10 @@ function operate(x, y, operator) {
 };
 
 function parse(string, input) {
+  //prevent double operators
+  if (operators.indexOf(input) !== -1 &&
+      display.lastIndexOf(input) === display.length -1) return;
+
   //keep decimals to one per number
   if (input === '.' &&
       display.lastIndexOf('.') > display.indexOf('/') &&
@@ -43,7 +47,7 @@ function parse(string, input) {
       display.lastIndexOf('.') > display.indexOf('-') &&
       display.lastIndexOf('.') > display.indexOf('+')) return;
 
-  display = string.split(' ').join('')
+  //display = string.split(' ').join('')
   if (input !== '.') display = evaluate(shuntingYard(display));
 
   display += input;
@@ -127,7 +131,7 @@ function shuntingYard(string) { //takes input in algebraic notation and returns
   const inputArray = string.split('');
 
   inputArray.forEach(token => {
-    if (operators.indexOf(token) !== -1) {
+    if (operators.indexOf(token) !== -1 && outputQueue.length > 0) {
       operatorStack.push(token);
     } else {
       outputQueue.push(token);
@@ -137,5 +141,11 @@ function shuntingYard(string) { //takes input in algebraic notation and returns
   operatorStack.forEach(token => {
     outputQueue.push(token);
   });
-  return outputQueue.join(' ');
+  if (outputQueue[0] == '-') { //enable leading "-" to be interpreted as
+    outputQueue.shift();       //a negative sign
+    outputQueue[0] *= -1;
+    return outputQueue.join(' ');
+  } else {
+    return outputQueue.join(' ');
+  };
 };
