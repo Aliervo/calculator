@@ -6,12 +6,12 @@ screen.textContent = 'Hello, Calculator!';
 function updateScreen() {
   (display.indexOf('CLEAR') !== -1) ? //enable clear and delete
   display = '' :
-  (display.indexOf('DELETE') !== -1)? 
+  (display.indexOf('DELETE') !== -1)?
   display = display.slice (0, display.length - 7) :
   (display.indexOf('=') !== -1)? //keep equal sign from showing
   display = display.slice (0, display.indexOf('=')) :
     display = display;
-  
+
   screen.textContent = `${display}`;
 };
 
@@ -40,33 +40,32 @@ function divide() {
   return arguments[0] / arguments[1];
 };
 
-function operate(x, operator, y) {
-  const operation = (operator === '+') ? add(+x, +y) :
+function operate(x, y, operator) {
+  return (operator === '+') ? add(+x, +y) :
          (operator === '-') ? subtract(+x, +y) :
          (operator === '*') ? multiply(+x, +y) :
             divide(+x, +y);
-  return operation;
 };
 
 function parse(string, input) {
   const operations = ['/', '*', '-', '+'];
-  
+
   //keep decimals to one per number
   if (input === '.' && display.lastIndexOf('.') > display.indexOf('/') && display.lastIndexOf('.') > display.indexOf('*') && display.lastIndexOf('.') > display.indexOf('-') && display.lastIndexOf('.') > display.indexOf('+')) return;
 
   display = string.split(' ').join('')
   if (input !== '.') {
     operations.forEach(operator => {
-      if (display.indexOf(operator, 1) !== -1) display =`${operate(string.split(operator)[0], operator, string.split(operator)[1])}`;
+      if (display.indexOf(operator, 1) !== -1) display =`${operate(string.split(operator)[0], string.split(operator)[1], operator)}`;
     });
   };
-  
+
   if (input === '=') {
     if (operations.indexOf(string.split('').pop()) !== -1) {
       display = display.slice(0, display.length);
     };
   };
-  
+
   display += input;
   updateScreen();
 };
@@ -109,4 +108,23 @@ function keybindings(e) {
       return;
   };
   updateScreen();
+};
+
+function evaluate (string) { //evaluate an input string in reverse polish notation
+  const inputArray = string.split(' ');
+  const stack = [];
+  const operators = ['+','-','*','/','=']
+
+  inputArray.forEach(token => {
+    if (operators.indexOf(token) !== -1) {
+      let secondOperand = stack.pop();
+      let firstOperand = stack.pop();
+      let result = operate(firstOperand, secondOperand, token);
+      stack.push(result);
+    } else {
+        stack.push(token);
+    };
+    console.log(stack);
+  });
+  return stack.pop();
 };
