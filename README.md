@@ -1,6 +1,6 @@
 From The Odin Project's [curriculum](https://www.theodinproject.com/courses/web-development-101/lessons/calculator)
 
-This project summed up the JavaScript section by requiring creation of a fully functional calculator web page.
+This project summed up the first JavaScript section by requiring creation of a fully functional calculator web page.
 
 At this stage, all project requirements (including optional parts) are included.
 
